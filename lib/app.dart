@@ -5,7 +5,7 @@ import 'core/theme/app_theme.dart';
 import 'l10n/app_localizations.dart';
 import 'providers/locale_provider.dart';
 import 'providers/theme_provider.dart';
-import 'screens/home/home_screen.dart';
+import 'screens/auth/auth_gate.dart';
 
 class AlbumApp extends StatelessWidget {
   const AlbumApp({super.key});
@@ -24,7 +24,7 @@ class AlbumApp extends StatelessWidget {
       locale: localeProvider.locale,
       supportedLocales: LocaleProvider.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
-      home: const HomeScreen(),
+      home: const AuthGate(),
     );
   }
 }

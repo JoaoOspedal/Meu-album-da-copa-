@@ -1,0 +1,17 @@
+{
+  "dart.flutterSdkPath": "/home/vinicius/flutter/flutter",
+  "dart.sdkPath": "/home/vinicius/flutter/flutter/bin/cache/dart-sdk",
+  "dart.previewFlutterUiGuides": true,
+  "dart.openDevTools": "flutter",
+  "dart.env": {
+    "CHROME_EXECUTABLE": "/usr/bin/google-chrome-stable"
+  },
+  "terminal.integrated.env.linux": {
+    "PATH": "/home/vinicius/flutter/flutter/bin:${env:PATH}",
+    "CHROME_EXECUTABLE": "/usr/bin/google-chrome-stable"
+  },
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "Dart-Code.dart-code"
+  }
+}

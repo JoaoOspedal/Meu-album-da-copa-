@@ -2,24 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'app.dart';
-import 'data/mock/mock_country_repository.dart';
-import 'data/mock/mock_data.dart';
-import 'data/mock/mock_player_repository.dart';
+import 'core/api/api_client.dart';
+import 'data/catalog_store.dart';
+import 'data/repositories/api_country_repository.dart';
+import 'data/repositories/api_player_repository.dart';
 import 'data/repositories/country_repository.dart';
 import 'data/repositories/player_repository.dart';
-import 'models/user_profile.dart';
-import 'providers/album_provider.dart';
+import 'providers/auth_provider.dart';
+import 'providers/collection_provider.dart';
 import 'providers/locale_provider.dart';
 import 'providers/theme_provider.dart';
-import 'providers/user_provider.dart';
 
 void main() {
   runApp(const RootApp());
 }
 
-/// Wires concrete data sources and app-wide state before handing off to
-/// [AlbumApp]. Swapping the mock repositories for real ones only requires
-/// changing the two `Provider<...>` lines below.
+/// Wires the API client, catalog and app-wide state before handing off to
+/// [AlbumApp]. The repositories are backed by the backend through
+/// [CatalogStore]; swapping data sources only requires changing the providers
+/// below.
 class RootApp extends StatelessWidget {
   const RootApp({super.key});
 
@@ -27,18 +28,30 @@ class RootApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<CountryRepository>(create: (_) => MockCountryRepository()),
-        Provider<PlayerRepository>(create: (_) => MockPlayerRepository()),
+        Provider<ApiClient>(
+          create: (_) => ApiClient(),
+          dispose: (_, client) => client.dispose(),
+        ),
+        Provider<CatalogStore>(
+          create: (context) => CatalogStore(context.read<ApiClient>()),
+        ),
+        Provider<CountryRepository>(
+          create: (context) =>
+              ApiCountryRepository(context.read<CatalogStore>()),
+        ),
+        Provider<PlayerRepository>(
+          create: (context) =>
+              ApiPlayerRepository(context.read<CatalogStore>()),
+        ),
         ChangeNotifierProvider(
-          create: (_) =>
-              AlbumProvider(initiallyOwned: MockData.initiallyOwnedStickerIds),
+          create: (context) => CollectionProvider(context.read<ApiClient>()),
+        ),
+        ChangeNotifierProvider(
+          create: (context) =>
+              AuthProvider(context.read<ApiClient>())..tryAutoLogin(),
         ),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
-        ChangeNotifierProvider(
-          create: (_) =>
-              UserProvider(profile: const UserProfile(name: 'João Pedro')),
-        ),
       ],
       child: const AlbumApp(),
     );

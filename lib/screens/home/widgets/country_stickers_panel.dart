@@ -2,17 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/catalog_store.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../l10n/app_strings.dart';
+import '../../../models/album_badge.dart';
 import '../../../models/country.dart';
 import '../../../models/player.dart';
-import '../../../providers/album_provider.dart';
+import '../../../providers/collection_provider.dart';
+import '../../../widgets/badge_tile.dart';
+import '../../../widgets/sticker_actions_sheet.dart';
 import '../../../widgets/sticker_tile.dart';
 import '../../add_sticker/add_sticker_screen.dart';
 import '../../player_detail/player_detail_screen.dart';
 
-/// Expanded panel shown under a [Country] row: the team's full sticker
-/// album page (collected stickers highlighted, missing ones grayed out)
-/// plus the action to add more stickers.
+/// Expanded panel shown under a [Country] row: the team's badge sticker plus
+/// the full player album page (collected stickers highlighted, missing ones
+/// grayed out) and the action to add more stickers.
 class CountryStickersPanel extends StatelessWidget {
   final Country country;
   final List<Player> roster;
@@ -29,17 +34,16 @@ class CountryStickersPanel extends StatelessWidget {
     );
   }
 
-  void _toggleOwned(BuildContext context, Player player) {
+  void _toggleOwned(BuildContext context, int stickerId) {
     final l10n = AppLocalizations.of(context)!;
-    final album = context.read<AlbumProvider>();
-    album.toggleOwned(player.id);
+    final collection = context.read<CollectionProvider>();
+    final willOwn = !collection.isOwned(stickerId);
+    collection.toggleOwned(stickerId);
     HapticFeedback.lightImpact();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          album.isOwned(player.id)
-              ? l10n.stickerMarkedOwned
-              : l10n.stickerMarkedMissing,
+          willOwn ? l10n.stickerMarkedOwned : l10n.stickerMarkedMissing,
         ),
         duration: const Duration(seconds: 2),
       ),
@@ -49,7 +53,8 @@ class CountryStickersPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final album = context.watch<AlbumProvider>();
+    final collection = context.watch<CollectionProvider>();
+    final badge = context.read<CatalogStore>().badgeForCountry(country.id);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 4, 12, 16),
@@ -84,7 +89,7 @@ class CountryStickersPanel extends StatelessWidget {
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: roster.length,
+            itemCount: roster.length + (badge != null ? 1 : 0),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
               mainAxisSpacing: 10,
@@ -92,17 +97,45 @@ class CountryStickersPanel extends StatelessWidget {
               childAspectRatio: 0.78,
             ),
             itemBuilder: (context, index) {
-              final player = roster[index];
+              if (badge != null && index == 0) {
+                return _buildBadge(context, badge, collection);
+              }
+              final player = roster[index - (badge != null ? 1 : 0)];
               return StickerTile(
                 player: player,
-                owned: album.isOwned(player.id),
+                owned: collection.isOwned(player.stickerId),
+                quantity: collection.quantity(player.stickerId),
+                favorite: collection.isFavorite(player.stickerId),
+                wanted: collection.isWanted(player.stickerId),
                 onTap: () => _openPlayer(context, player),
-                onLongPress: () => _toggleOwned(context, player),
+                onLongPress: () => _toggleOwned(context, player.stickerId),
               );
             },
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildBadge(
+    BuildContext context,
+    AlbumBadge badge,
+    CollectionProvider collection,
+  ) {
+    final strings = AppStrings.of(context);
+    return BadgeTile(
+      badge: badge,
+      owned: collection.isOwned(badge.stickerId),
+      quantity: collection.quantity(badge.stickerId),
+      favorite: collection.isFavorite(badge.stickerId),
+      onTap: () => showStickerActions(
+        context,
+        stickerId: badge.stickerId,
+        title: badge.title,
+        subtitle: '${strings.typeBadge} · ${country.name}',
+        icon: Icons.shield_outlined,
+      ),
+      onLongPress: () => _toggleOwned(context, badge.stickerId),
     );
   }
 }
