@@ -1,4 +1,4 @@
-# Meu-album-da-copa-
+# Meu album da copa
 Projeto de um álbum da copa do mundo 2026 baseado em Flutter
 
 Este repositório contém apenas o **frontend** do app, com dados mockados localmente (sem backend/API).
