@@ -1,0 +1,53 @@
+{
+  "@@locale": "en",
+  "appTitle": "World Cup 2026 Album",
+  "menuProfile": "Profile",
+  "menuSettings": "Settings",
+  "myStickers": "My stickers",
+  "addSticker": "Add sticker",
+  "searchPlayerHint": "Search player...",
+  "noStickersFound": "No stickers found",
+  "markAsOwned": "Mark as collected",
+  "removeFromAlbum": "Remove from collection",
+  "stickerMarkedOwned": "Sticker marked as collected",
+  "stickerMarkedMissing": "Sticker marked as missing",
+  "labelCountry": "Country",
+  "labelPosition": "Position",
+  "labelStickerNumber": "Sticker number",
+  "positionGoalkeeper": "Goalkeeper",
+  "positionDefender": "Defender",
+  "positionMidfielder": "Midfielder",
+  "positionForward": "Forward",
+  "settingsTitle": "Settings",
+  "settingsThemeSection": "Theme",
+  "settingsDarkMode": "Dark theme",
+  "settingsLanguageSection": "Language",
+  "languagePortuguese": "Portuguese",
+  "languageEnglish": "English",
+  "profileTitle": "Profile",
+  "profileStickersSummary": "{owned} of {total} stickers collected",
+  "@profileStickersSummary": {
+    "placeholders": {
+      "owned": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "stickerStatusOwned": "Collected",
+  "stickerStatusMissing": "Missing",
+  "countryProgress": "{owned}/{total}",
+  "@countryProgress": {
+    "placeholders": {
+      "owned": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "playerDetailTitle": "Player details"
+}
