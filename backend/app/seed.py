@@ -19,6 +19,88 @@ from .security import hash_password
 # Usuário de teste/admin criado automaticamente ao popular o banco.
 TEST_USER = {"username": "admin", "email": "admin@album.com", "password": "admin123"}
 
+# Código FIFA -> código ISO 3166-1 alpha-2 (usado pelo flagcdn.com para a imagem da bandeira)
+FIFA_TO_ISO2 = {
+    "BRA": "br",
+    "ARG": "ar",
+    "FRA": "fr",
+    "ENG": "gb-eng",
+    "POR": "pt",
+    "ESP": "es",
+    "GER": "de",
+    "USA": "us",
+    "MEX": "mx",
+    "CAN": "ca",
+    "NED": "nl",
+    "CRO": "hr",
+    "URU": "uy",
+    "BEL": "be",
+    "MAR": "ma",
+    "JPN": "jp",
+}
+
+
+def flag_url_for(fifa_code: str) -> str | None:
+    iso2 = FIFA_TO_ISO2.get(fifa_code)
+    return f"https://flagcdn.com/w320/{iso2}.png" if iso2 else None
+
+
+# Nome do jogador -> foto (thumbnail do Wikimedia Commons, licença livre/CC, hotlink-friendly)
+PLAYER_PHOTOS: dict[str, str] = {
+    "Vini Jr.": "https://commons.wikimedia.org/wiki/Special:FilePath/Vinicius_Jr_2021.jpg?width=400",
+    "Rodrygo": "https://commons.wikimedia.org/wiki/Special:FilePath/Rodrygo_2020.png?width=400",
+    "Alisson": "https://commons.wikimedia.org/wiki/Special:FilePath/Alisson_Becker_04012026_(1).jpg?width=400",
+    "Marquinhos": "https://commons.wikimedia.org/wiki/Special:FilePath/Marquinhos_(Marcos_Ao%C3%A1s_Corr%C3%AAa),_PSG.JPG?width=400",
+    "Bruno Guimarães": "https://commons.wikimedia.org/wiki/Special:FilePath/Bruno_Guimar%C3%A3es.png?width=400",
+    "Lionel Messi": "https://commons.wikimedia.org/wiki/Special:FilePath/Lionel_Messi_NE_Revolution_Inter_Miami_7.9.25-055.jpg?width=400",
+    "Julián Álvarez": "https://commons.wikimedia.org/wiki/Special:FilePath/Juli%C3%A1n_%C3%81lvarez_(footballer)_2023.jpg?width=400",
+    "Emiliano Martínez": "https://commons.wikimedia.org/wiki/Special:FilePath/Emiliano_Martinez.jpg?width=400",
+    "Enzo Fernández": "https://commons.wikimedia.org/wiki/Special:FilePath/Enzo_Fern%C3%A1ndez.jpg?width=400",
+    "Cristian Romero": "https://commons.wikimedia.org/wiki/Special:FilePath/Cuti_Romero_Tottenham_2022.jpg?width=400",
+    "Kylian Mbappé": "https://commons.wikimedia.org/wiki/Special:FilePath/Kylian_Mbappe_France_v_Senegal_16_June_2026-391_(cropped).jpg?width=400",
+    "Antoine Griezmann": "https://commons.wikimedia.org/wiki/Special:FilePath/Antoine_Griezmann_(51100409504)_(cropped).jpg?width=400",
+    "Aurélien Tchouaméni": "https://commons.wikimedia.org/wiki/Special:FilePath/Aurelien_Tchouameni_France_v_Senegal_16_June_2026-447_(cropped).jpg?width=400",
+    "Mike Maignan": "https://commons.wikimedia.org/wiki/Special:FilePath/Maignan_1_Milan_2022.jpg?width=400",
+    "Harry Kane": "https://commons.wikimedia.org/wiki/Special:FilePath/Harry_Kane_on_October_10%2C_2023.jpg?width=400",
+    "Jude Bellingham": "https://commons.wikimedia.org/wiki/Special:FilePath/Jude_Bellingham_2020_(cropped2).jpg?width=400",
+    "Bukayo Saka": "https://commons.wikimedia.org/wiki/Special:FilePath/1_bukayo_saka_arsenal_2025_(cropped).jpg?width=400",
+    "Jordan Pickford": "https://commons.wikimedia.org/wiki/Special:FilePath/Jordan_Pickford_2022-07-16_1.jpg?width=400",
+    "Cristiano Ronaldo": "https://commons.wikimedia.org/wiki/Special:FilePath/Cristiano_Ronaldo_in_2023.jpg?width=400",
+    "Bruno Fernandes": "https://commons.wikimedia.org/wiki/Special:FilePath/Bruno_Fernandes_00-07-14.16.png?width=400",
+    "Rafael Leão": "https://commons.wikimedia.org/wiki/Special:FilePath/Rafael_Le%C3%A3o_WC2022.jpg?width=400",
+    "Diogo Costa": "https://commons.wikimedia.org/wiki/Special:FilePath/Diogo_Costa.jpg?width=400",
+    "Rodri": "https://commons.wikimedia.org/wiki/Special:FilePath/Rodri2024.jpg?width=400",
+    "Lamine Yamal": "https://commons.wikimedia.org/wiki/Special:FilePath/Lamine_Yamal_in_2025.jpg?width=400",
+    "Pedri": "https://commons.wikimedia.org/wiki/Special:FilePath/Pedri.jpg?width=400",
+    "Unai Simón": "https://commons.wikimedia.org/wiki/Special:FilePath/Unai_Sim%C3%B3n.jpg?width=400",
+    "Jamal Musiala": "https://commons.wikimedia.org/wiki/Special:FilePath/Jamal_Musiala_2022_%28cropped%29.jpg?width=400",
+    "Florian Wirtz": "https://commons.wikimedia.org/wiki/Special:FilePath/Florian_Wirtz_2024.jpg?width=400",
+    "Kai Havertz": "https://commons.wikimedia.org/wiki/Special:FilePath/Kai_Havertz_2020.jpg?width=400",
+    "Manuel Neuer": "https://commons.wikimedia.org/wiki/Special:FilePath/Manuel_Neuer_2020.jpg?width=400",
+    "Christian Pulisic": "https://commons.wikimedia.org/wiki/Special:FilePath/Milan_Cagliari_2025_-_Pulisic.jpg?width=400",
+    "Weston McKennie": "https://commons.wikimedia.org/wiki/Special:FilePath/USAvVEN_2019-06-09_-_Weston_McKennie_%2851170534993%29_%28close-up%29.jpg?width=400",
+    "Matt Turner": "https://commons.wikimedia.org/wiki/Special:FilePath/Matt_Turner_WC2022_%28cropped%29.jpg?width=400",
+    "Santiago Giménez": "https://commons.wikimedia.org/wiki/Special:FilePath/Santiago_Gim%C3%A9nez_-_2023.jpg?width=400",
+    "Edson Álvarez": "https://commons.wikimedia.org/wiki/Special:FilePath/Edson_%C3%81lvarez.png?width=400",
+    "Guillermo Ochoa": "https://commons.wikimedia.org/wiki/Special:FilePath/Francisco_Guillermo_Ochoa_2014.jpg?width=400",
+    "Alphonso Davies": "https://commons.wikimedia.org/wiki/Special:FilePath/Alphonso_Davies_-_cropped.jpg?width=400",
+    "Jonathan David": "https://commons.wikimedia.org/wiki/Special:FilePath/JonathanDavidFCSalzburg%28cropped%29.jpg?width=400",
+    "Virgil van Dijk": "https://commons.wikimedia.org/wiki/Special:FilePath/Virgil_van_Dijk_2019.jpg?width=400",
+    "Cody Gakpo": "https://commons.wikimedia.org/wiki/Special:FilePath/Cody_Gakpo_06042025_%281%29_%28cropped%29.jpg?width=400",
+    "Frenkie de Jong": "https://commons.wikimedia.org/wiki/Special:FilePath/Frenkie_De_Jong_%282025%29_%28cropped%29.png?width=400",
+    "Luka Modrić": "https://commons.wikimedia.org/wiki/Special:FilePath/Luka_Modric_2018.png?width=400",
+    "Joško Gvardiol": "https://commons.wikimedia.org/wiki/Special:FilePath/2021_Jo%C5%A1ko_Gvardiol_%28cropped%29.jpg?width=400",
+    "Federico Valverde": "https://commons.wikimedia.org/wiki/Special:FilePath/Federico_Valverde_2021_%28cropped%29.jpg?width=400",
+    "Darwin Núñez": "https://commons.wikimedia.org/wiki/Special:FilePath/Darwin_N%C3%BA%C3%B1ez_%28cropped%29.jpg?width=400",
+    "Kevin De Bruyne": "https://commons.wikimedia.org/wiki/Special:FilePath/Kevin_De_Bruyne.jpg?width=400",
+    "Romelu Lukaku": "https://commons.wikimedia.org/wiki/Special:FilePath/Romelu_Lukaku_kick_off_Fulham_v_WBA_%28cropped%29.jpg?width=400",
+    "Achraf Hakimi": "https://commons.wikimedia.org/wiki/Special:FilePath/Achraf_Hakimi_PSG.jpg?width=400",
+    "Brahim Díaz": "https://commons.wikimedia.org/wiki/Special:FilePath/Brahim_Diaz_Morocco_v_Norway_7_June_2026-36_%28cropped%29.jpg?width=400",
+    "Takefusa Kubo": "https://commons.wikimedia.org/wiki/Special:FilePath/Takefusa_Kubo_2019.png?width=400",
+    "Kaoru Mitoma": "https://commons.wikimedia.org/wiki/Special:FilePath/Kaoru_Mitoma_%282022%29.jpg?width=400",
+}
+
+
 # (nome, código FIFA, confederação, grupo) + lista de jogadores
 # jogador: (nome, posição, número, clube)
 NATIONS: list[dict] = [
@@ -186,6 +268,7 @@ def seed(db: Session) -> None:
             code=n["code"],
             confederation=n["confederation"],
             group_name=n["group"],
+            flag_url=flag_url_for(n["code"]),
         )
         db.add(nation)
         db.flush()  # garante nation.id
@@ -197,18 +280,21 @@ def seed(db: Session) -> None:
                 type=StickerType.BADGE,
                 title=f"Brasão — {nation.name}",
                 nation_id=nation.id,
+                image_url=nation.flag_url,
             )
         )
         sticker_number += 1
 
         # Jogadores + figurinhas de jogador
         for name, position, number, club in n["players"]:
+            photo_url = PLAYER_PHOTOS.get(name)
             player = Player(
                 name=name,
                 nation_id=nation.id,
                 position=position,
                 shirt_number=number,
                 club=club,
+                photo_url=photo_url,
             )
             db.add(player)
             db.flush()
@@ -219,6 +305,7 @@ def seed(db: Session) -> None:
                     title=name,
                     nation_id=nation.id,
                     player_id=player.id,
+                    image_url=photo_url,
                 )
             )
             sticker_number += 1

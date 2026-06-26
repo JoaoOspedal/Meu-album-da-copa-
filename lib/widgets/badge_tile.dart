@@ -55,6 +55,9 @@ class BadgeTile extends StatelessWidget {
                     backgroundColor: owned
                         ? scheme.tertiaryContainer
                         : scheme.surfaceContainerHighest,
+                    foregroundImage: badge.imageUrl != null
+                        ? NetworkImage(badge.imageUrl!)
+                        : null,
                     child: Icon(
                       Icons.shield_outlined,
                       color: owned

@@ -48,6 +48,9 @@ class CountryGridCard extends StatelessWidget {
                 CircleAvatar(
                   radius: 24,
                   backgroundColor: country.color,
+                  foregroundImage: country.flagUrl != null
+                      ? NetworkImage(country.flagUrl!)
+                      : null,
                   child: Text(
                     country.code,
                     style: const TextStyle(
